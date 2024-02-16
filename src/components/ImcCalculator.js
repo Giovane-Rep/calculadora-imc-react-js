@@ -4,7 +4,7 @@ import Button from "./Button";
 
 import "./ImcCalculator.css";
 
-const ImcCalculator = () => {
+const ImcCalculator = ({ calcImc }) => {
     const [height, setHeight] = useState("");
     const [weight, setWeight] = useState("");
 
@@ -14,6 +14,31 @@ const ImcCalculator = () => {
         setHeight("");
         setWeight("");
     };
+
+    const validDigits = (text) => {
+
+
+        text = text.replace(/[^0-9,]/g, "");
+
+        while (text.split(',').length > 2) { // enquanto houver mais de uma vírgula
+            // substitui a última ocorrência de vírgula
+            text = text.replace(/,([^,]*)$/, '$1');
+        }
+
+        return text;
+    }
+
+    const handleHeightChange = (e) => {
+        const updatedValue = validDigits(e.target.value);
+
+        setHeight(updatedValue);
+    }
+
+    const handleWeightChange = (e) => {
+        const updatedValue = validDigits(e.target.value);
+
+        setWeight(updatedValue);
+    }
 
     return (
         <div id="calc-container">
@@ -27,9 +52,7 @@ const ImcCalculator = () => {
                             name="height"
                             id="height"
                             placeholder="Exemplo 1,70"
-                            onChange={(e) => {
-                                setHeight(e.target.value)
-                            }}
+                            onChange={(e) => handleHeightChange(e)}
                             value={height}
                         />
                     </div>
@@ -40,15 +63,13 @@ const ImcCalculator = () => {
                             name="weight"
                             id="weight"
                             placeholder="Exemplo 72,5"
-                            onChange={(e) => {
-                                setWeight(e.target.value)
-                            }}
+                            onChange={(e) => handleWeightChange(e)}
                             value={weight}
                         />
                     </div>
                 </div>
                 <div className="action-control">
-                    <Button id="calc-btn" text="Calcular" />
+                    <Button id="calc-btn" text="Calcular" action={(e) => calcImc(e, height, weight)} />
                     <Button id="clear-btn" text="Limpar" action={clearForm} />
                 </div>
             </form>
